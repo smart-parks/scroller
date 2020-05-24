@@ -36,8 +36,10 @@
 		global.core = { effect : {} };
 
 	} else if (!core.effect) {
-		core.effect = {};
+		global.core.effect = {};
 	}
+
+	var core = global.core
 
 	core.effect.Animate = {
 

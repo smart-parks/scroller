@@ -1,8 +1,10 @@
+var Scroller = require('./Scroller')
+
 var EasyScroller = function(content, options) {
-	
 	this.content = content;
 	this.container = content.parentNode;
 	this.options = options || {};
+	this.render = genRender();
 
 	// create Scroller instance
 	var that = this;
@@ -21,8 +23,7 @@ var EasyScroller = function(content, options) {
 
 };
 
-EasyScroller.prototype.render = (function() {
-	
+function genRender() {
 	var docStyle = document.documentElement.style;
 	
 	var engine;
@@ -62,15 +63,13 @@ EasyScroller.prototype.render = (function() {
 		};
 		
 	} else {
-		
 		return function(left, top, zoom) {
 			this.content.style.marginLeft = left ? (-left/zoom) + 'px' : '';
 			this.content.style.marginTop = top ? (-top/zoom) + 'px' : '';
 			this.content.style.zoom = zoom || '';
 		};
-		
 	}
-})();
+}
 
 EasyScroller.prototype.reflow = function() {
 
@@ -184,27 +183,4 @@ EasyScroller.prototype.bindEvents = function() {
 
 };
 
-// automatically attach an EasyScroller to elements found with the right data attributes
-document.addEventListener("DOMContentLoaded", function() {
-	
-	var elements = document.querySelectorAll('[data-scrollable],[data-zoomable]'), element;
-	for (var i = 0; i < elements.length; i++) {
-
-		element = elements[i];
-		var scrollable = element.attributes.getNamedItem('data-scrollable') ? element.attributes.getNamedItem('data-scrollable').value : null;
-		var zoomable = element.attributes.getNamedItem('data-zoomable') ? element.attributes.getNamedItem('data-zoomable').value : '';
-		var zoomOptions = zoomable.split('-');
-		var minZoom = zoomOptions.length > 1 && parseFloat(zoomOptions[0]);
-		var maxZoom = zoomOptions.length > 1 && parseFloat(zoomOptions[1]);
-
-		new EasyScroller(element, {
-			scrollingX: scrollable === 'true' || scrollable === 'x',
-			scrollingY: scrollable === 'true' || scrollable === 'y',
-			zooming: zoomable === 'true' || zoomOptions.length > 1,
-			minZoom: minZoom,
-			maxZoom: maxZoom
-		});
-
-	};
-
-}, false);
+module.exports = EasyScroller;

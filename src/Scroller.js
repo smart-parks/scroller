@@ -12,6 +12,8 @@
  * License: MIT + Apache (V2)
  */
 
+require('./Animate')
+
 var Scroller;
 
 (function() {
@@ -1353,3 +1355,5 @@ var Scroller;
 	}
 
 })();
+
+module.exports = Scroller;
