@@ -12,11 +12,12 @@
  * License: MIT + Apache (V2)
  */
 
-import { start, stop } from './Animate.js';
+import { start, stop } from "./Animate.js";
 
 var Scroller;
 
 /**
+ * @private
  * @param pos {Number} position between 0 (start of effect) and 1 (end of effect)
  **/
 function easeOutCubic(pos) {
@@ -24,6 +25,7 @@ function easeOutCubic(pos) {
 }
 
 /**
+ * @private
  * @param pos {Number} position between 0 (start of effect) and 1 (end of effect)
  **/
 function easeInOutCubic(pos) {
@@ -34,8 +36,11 @@ function easeInOutCubic(pos) {
   return 0.5 * (Math.pow(pos - 2, 3) + 2);
 }
 
-function NOOP() {};
+function NOOP() {}
 
+/**
+ * @public
+ */
 const defaults = {
   /** Enable scrolling on x-axis */
   scrollingX: true,
@@ -82,14 +87,16 @@ const defaults = {
   penetrationDeceleration: 0.03,
 
   /** This configures the amount of change applied to acceleration when reaching boundaries  **/
-  penetrationAcceleration: 0.08
+  penetrationAcceleration: 0.08,
 };
 
-(function() {
+(function () {
   /**
    * A pure logic 'component' for 'virtual' scrolling/zooming.
+   * @constructor
+   * @public
    */
-  Scroller = function(callback, options) {
+  Scroller = function (callback, options) {
     this.__callback = callback;
 
     this.options = Object.assign({}, defaults, options);
@@ -260,12 +267,14 @@ const defaults = {
      * Requires the available space for the outer element and the outer size of the inner element.
      * All values which are falsy (null or zero etc.) are ignored and the old value is kept.
      *
+     * @public
+     *
      * @param clientWidth {Integer ? null} Inner width of outer element
      * @param clientHeight {Integer ? null} Inner height of outer element
      * @param contentWidth {Integer ? null} Outer width of inner element
      * @param contentHeight {Integer ? null} Outer height of inner element
      */
-    setDimensions: function(
+    setDimensions: function (
       clientWidth,
       clientHeight,
       contentWidth,
@@ -300,10 +309,12 @@ const defaults = {
     /**
      * Sets the client coordinates in relation to the document.
      *
+     * @public
+     *
      * @param left {Integer ? 0} Left position of outer element
      * @param top {Integer ? 0} Top position of outer element
      */
-    setPosition: function(left, top) {
+    setPosition: function (left, top) {
       var self = this;
 
       self.__clientLeft = left || 0;
@@ -313,10 +324,12 @@ const defaults = {
     /**
      * Configures the snapping (when snapping is active)
      *
+     * @public
+     *
      * @param width {Integer} Snapping width
      * @param height {Integer} Snapping height
      */
-    setSnapSize: function(width, height) {
+    setSnapSize: function (width, height) {
       var self = this;
 
       self.__snapWidth = width;
@@ -328,12 +341,14 @@ const defaults = {
      * the user event is released during visibility of this zone. This was introduced by some apps on iOS like
      * the official Twitter client.
      *
+     * @public
+     *
      * @param height {Integer} Height of pull-to-refresh zone on top of rendered list
      * @param activateCallback {Function} Callback to execute on activation. This is for signalling the user about a refresh is about to happen when he release.
      * @param deactivateCallback {Function} Callback to execute on deactivation. This is for signalling the user about the refresh being cancelled.
      * @param startCallback {Function} Callback to execute to start the real async refresh action. Call {@link #finishPullToRefresh} after finish of refresh.
      */
-    activatePullToRefresh: function(
+    activatePullToRefresh: function (
       height,
       activateCallback,
       deactivateCallback,
@@ -349,8 +364,9 @@ const defaults = {
 
     /**
      * Starts pull-to-refresh manually.
+     * @public
      */
-    triggerPullToRefresh: function() {
+    triggerPullToRefresh: function () {
       // Use publish instead of scrollTo to allow scrolling to out of boundary position
       // We don't need to normalize scrollLeft, zoomLevel, etc. here because we only y-scrolling when pull-to-refresh is enabled
       this.__publish(
@@ -367,8 +383,9 @@ const defaults = {
 
     /**
      * Signalizes that pull-to-refresh is finished.
+     * @public
      */
-    finishPullToRefresh: function() {
+    finishPullToRefresh: function () {
       var self = this;
 
       self.__refreshActive = false;
@@ -382,29 +399,33 @@ const defaults = {
     /**
      * Returns the scroll position and zooming values
      *
-     * @return {Map} `left` and `top` scroll position and `zoom` level
+     * @public
+     *
+     * @return {Object} `left` and `top` scroll position and `zoom` level
      */
-    getValues: function() {
+    getValues: function () {
       var self = this;
 
       return {
         left: self.__scrollLeft,
         top: self.__scrollTop,
-        zoom: self.__zoomLevel
+        zoom: self.__zoomLevel,
       };
     },
 
     /**
      * Returns the maximum scroll values
      *
-     * @return {Map} `left` and `top` maximum scroll values
+     * @public
+     *
+     * @return {Object} `left` and `top` maximum scroll values
      */
-    getScrollMax: function() {
+    getScrollMax: function () {
       var self = this;
 
       return {
         left: self.__maxScrollLeft,
-        top: self.__maxScrollTop
+        top: self.__maxScrollTop,
       };
     },
 
@@ -412,13 +433,15 @@ const defaults = {
      * Zooms to the given level. Supports optional animation. Zooms
      * the center when no coordinates are given.
      *
+     * @public
+     *
      * @param level {Number} Level to zoom to
      * @param animate {Boolean ? false} Whether to use animation
      * @param originLeft {Number ? null} Zoom in at given left coordinate
      * @param originTop {Number ? null} Zoom in at given top coordinate
      * @param callback {Function ? null} A callback that gets fired when the zoom is complete.
      */
-    zoomTo: function(level, animate, originLeft, originTop, callback) {
+    zoomTo: function (level, animate, originLeft, originTop, callback) {
       var self = this;
 
       if (!self.options.zooming) {
@@ -482,13 +505,15 @@ const defaults = {
     /**
      * Zooms the content by the given factor.
      *
+     * @public
+     *
      * @param factor {Number} Zoom by given factor
      * @param animate {Boolean ? false} Whether to use animation
      * @param originLeft {Number ? 0} Zoom in at given left coordinate
      * @param originTop {Number ? 0} Zoom in at given top coordinate
      * @param callback {Function ? null} A callback that gets fired when the zoom is complete.
      */
-    zoomBy: function(factor, animate, originLeft, originTop, callback) {
+    zoomBy: function (factor, animate, originLeft, originTop, callback) {
       var self = this;
 
       self.zoomTo(
@@ -503,12 +528,14 @@ const defaults = {
     /**
      * Scrolls to the given position. Respect limitations and snapping automatically.
      *
+     * @public
+     *
      * @param left {Number?null} Horizontal scroll position, keeps current if value is <code>null</code>
      * @param top {Number?null} Vertical scroll position, keeps current if value is <code>null</code>
      * @param animate {Boolean?false} Whether the scrolling should happen using an animation
      * @param zoom {Number?null} Zoom level to go to
      */
-    scrollTo: function(left, top, animate, zoom) {
+    scrollTo: function (left, top, animate, zoom) {
       var self = this;
 
       // Stop deceleration
@@ -572,11 +599,13 @@ const defaults = {
     /**
      * Scroll by the given offset
      *
+     * @public
+     *
      * @param left {Number ? 0} Scroll x-axis by given offset
      * @param top {Number ? 0} Scroll x-axis by given offset
      * @param animate {Boolean ? false} Whether to animate the given change
      */
-    scrollBy: function(left, top, animate) {
+    scrollBy: function (left, top, animate) {
       var self = this;
 
       var startLeft = self.__isAnimating
@@ -597,8 +626,9 @@ const defaults = {
 
     /**
      * Mouse wheel handler for zooming support
+     * @public
      */
-    doMouseZoom: function(wheelDelta, timeStamp, pageX, pageY) {
+    doMouseZoom: function (wheelDelta, timeStamp, pageX, pageY) {
       var self = this;
       var change = wheelDelta > 0 ? 0.97 : 1.03;
 
@@ -612,8 +642,9 @@ const defaults = {
 
     /**
      * Touch start handler for scrolling support
+     * @public
      */
-    doTouchStart: function(touches, timeStamp) {
+    doTouchStart: function (touches, timeStamp) {
       // Array-like check is enough here
       if (touches.length == null) {
         throw new Error("Invalid touch list: " + touches);
@@ -695,8 +726,9 @@ const defaults = {
 
     /**
      * Touch move handler for scrolling support
+     * @public
      */
-    doTouchMove: function(touches, timeStamp, scale) {
+    doTouchMove: function (touches, timeStamp, scale) {
       // Array-like check is enough here
       if (touches.length == null) {
         throw new Error("Invalid touch list: " + touches);
@@ -870,8 +902,9 @@ const defaults = {
 
     /**
      * Touch end handler for scrolling support
+     * @public
      */
-    doTouchEnd: function(timeStamp) {
+    doTouchEnd: function (timeStamp) {
       if (timeStamp instanceof Date) {
         timeStamp = timeStamp.valueOf();
       }
@@ -1010,11 +1043,13 @@ const defaults = {
     /**
      * Applies the scroll position to the content element
      *
+     * @private
+     *
      * @param left {Number} Left scroll position
      * @param top {Number} Top scroll position
      * @param animate {Boolean?false} Whether animation should be used to move to the new coordinates
      */
-    __publish: function(left, top, zoom, animate) {
+    __publish: function (left, top, zoom, animate) {
       var self = this;
 
       // Remember whether we had an animation, then we try to continue based on the current "drive" of the animation
@@ -1038,7 +1073,7 @@ const defaults = {
         var diffTop = top - oldTop;
         var diffZoom = zoom - oldZoom;
 
-        var step = function(percent, now, render) {
+        var step = function (percent, now, render) {
           if (render) {
             self.__scrollLeft = oldLeft + diffLeft * percent;
             self.__scrollTop = oldTop + diffTop * percent;
@@ -1055,11 +1090,11 @@ const defaults = {
           }
         };
 
-        var verify = function(id) {
+        var verify = function (id) {
           return self.__isAnimating === id;
         };
 
-        var completed = function(
+        var completed = function (
           renderedFramesPerSecond,
           animationId,
           wasFinished
@@ -1111,8 +1146,9 @@ const defaults = {
 
     /**
      * Recomputes scroll minimum values based on client dimensions and content dimensions.
+     * @private
      */
-    __computeScrollMax: function(zoomLevel) {
+    __computeScrollMax: function (zoomLevel) {
       var self = this;
 
       if (zoomLevel == null) {
@@ -1138,8 +1174,9 @@ const defaults = {
     /**
      * Called when a touch sequence end and the speed of the finger was high enough
      * to switch into deceleration mode.
+     * @private
      */
-    __startDeceleration: function(timeStamp) {
+    __startDeceleration: function (timeStamp) {
       var self = this;
 
       if (self.options.paging) {
@@ -1172,7 +1209,7 @@ const defaults = {
       }
 
       // Wrap class method
-      var step = function(percent, now, render) {
+      var step = function (percent, now, render) {
         self.__stepThroughDeceleration(render);
       };
 
@@ -1181,7 +1218,7 @@ const defaults = {
 
       // Detect whether it's still worth to continue animating steps
       // If we are already slow enough to not being user perceivable anymore, we stop the whole process here.
-      var verify = function() {
+      var verify = function () {
         var shouldContinue =
           Math.abs(self.__decelerationVelocityX) >=
             minVelocityToKeepDecelerating ||
@@ -1193,7 +1230,7 @@ const defaults = {
         return shouldContinue;
       };
 
-      var completed = function(
+      var completed = function (
         renderedFramesPerSecond,
         animationId,
         wasFinished
@@ -1218,9 +1255,10 @@ const defaults = {
     /**
      * Called on every step of the animation
      *
-     * @param inMemory {Boolean?false} Whether to not render the current step, but keep it in memory only. Used internally only!
+     * @param {Function} [render] Whether to not render the current step, but keep it in memory only. Used internally only!
+     * @private
      */
-    __stepThroughDeceleration: function(render) {
+    __stepThroughDeceleration: function (render) {
       var self = this;
 
       //
@@ -1327,7 +1365,7 @@ const defaults = {
           }
         }
       }
-    }
+    },
   };
 
   // Copy over members to prototype
@@ -1336,4 +1374,4 @@ const defaults = {
   }
 })();
 
-export default Scroller
+export default Scroller;

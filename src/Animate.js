@@ -23,18 +23,18 @@
  * based on the pure time difference.
  */
 
-var desiredFrames = 60;
-var millisecondsPerSecond = 1000;
-var running = {};
-var counter = 1;
-
 const global = typeof window == "undefined" ? {} : window;
+
+const desiredFrames = 60;
+const millisecondsPerSecond = 1000;
+const running = {};
+
+let counter = 1;
 
 /**
  * A requestAnimationFrame wrapper / polyfill.
  *
  * @param callback {Function} The callback to be invoked before the next repaint.
- * @param root {HTMLElement} The root element for the repaint
  */
 const requestAnimationFrame =
   global.requestAnimationFrame ||
@@ -45,8 +45,8 @@ const requestAnimationFrame =
 /**
  * Stops the given animation.
  *
- * @param id {Integer} Unique animation ID
- * @return {Boolean} Whether the animation was stopped (aka, was running before)
+ * @param {number} id Unique animation ID
+ * @return {boolean} Whether the animation was stopped (aka, was running before)
  */
 export function stop(id) {
   var cleared = running[id] != null;
@@ -61,8 +61,8 @@ export function stop(id) {
 /**
  * Whether the given animation is still running.
  *
- * @param id {Integer} Unique animation ID
- * @return {Boolean} Whether the animation is still running
+ * @param {number} id Unique animation ID
+ * @return {boolean} Whether the animation is still running
  */
 export function isRunning(id) {
   return running[id] != null;
@@ -71,36 +71,25 @@ export function isRunning(id) {
 /**
  * Start the animation.
  *
- * @param stepCallback {Function} Pointer to function which is executed on every step.
- *   Signature of the method should be `function(percent, now, virtual) { return continueWithAnimation; }`
- * @param verifyCallback {Function} Executed before every animation step.
- *   Signature of the method should be `function() { return continueWithAnimation; }`
- * @param completedCallback {Function}
- *   Signature of the method should be `function(droppedFrames, finishedAnimation) {}`
- * @param duration {Integer} Milliseconds to run the animation
- * @param easingMethod {Function} Pointer to easing function
- *   Signature of the method should be `function(percent) { return modifiedValue; }`
- * @param root {Element ? document.body} Render root, when available. Used for internal
- *   usage of requestAnimationFrame.
- * @return {Integer} Identifier of animation. Can be used to stop it any time.
+ * @param {Function} stepCallback Pointer to function which is executed on every step. Signature of the method should be `function(percent, now, virtual) { return continueWithAnimation; }`
+ * @param {Function} verifyCallback Executed before every animation step. Signature of the method should be `function() { return continueWithAnimation; }`
+ * @param {Function} completedCallback Signature of the method should be `function(droppedFrames, finishedAnimation) {}`
+ * @param {number} [duration] Milliseconds to run the animation
+ * @param {Function} [easingMethod] Pointer to easing function Signature of the method should be `function(percent) { return modifiedValue; }` usage of requestAnimationFrame.
+ * @return {number} Identifier of animation. Can be used to stop it any time.
  */
 export function start(
   stepCallback,
   verifyCallback,
   completedCallback,
   duration,
-  easingMethod,
-  root
+  easingMethod
 ) {
   var start = Date.now();
   var lastFrame = start;
   var percent = 0;
   var dropCounter = 0;
   var id = counter++;
-
-  if (!root) {
-    root = document.body;
-  }
 
   // Compacting running db automatically every few new animations
   if (id % 20 === 0) {
@@ -112,7 +101,7 @@ export function start(
   }
 
   // This is the internal step method which is called every few milliseconds
-  var step = function(virtual) {
+  var step = function (virtual) {
     // Normalize virtual value
     var render = virtual !== true;
 
@@ -167,7 +156,7 @@ export function start(
         );
     } else if (render) {
       lastFrame = now;
-      requestAnimationFrame(step, root);
+      requestAnimationFrame(step);
     }
   };
 
@@ -175,7 +164,7 @@ export function start(
   running[id] = true;
 
   // Init first step
-  requestAnimationFrame(step, root);
+  requestAnimationFrame(step);
 
   // Return unique animation ID
   return id;

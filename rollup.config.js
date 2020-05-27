@@ -1,19 +1,19 @@
 // rollup.config.js
-import compiler from "@ampproject/rollup-plugin-closure-compiler";
+import { terser } from "rollup-plugin-terser";
 
 export default {
   input: "src/Scroller.js",
-  output: {
-    file: "index.js",
-    format: "umd",
-    name: "Scroller"
-  },
+  output: [
+    { file: "index.js", format: "cjs" },
+    { file: "index.umd.js", format: "umd", name: "Scroller" }
+  ],
   plugins: [
-    compiler({
-      language_in: 'ES6',
-      language_out: 'ES5',
-      compilation_level: "SIMPLE",
-      env: "BROWSER"
-    })
-  ]
+    terser({
+      mangle: {
+        properties: {
+          regex: /__.+/
+        }
+      }
+    }),
+  ],
 };
