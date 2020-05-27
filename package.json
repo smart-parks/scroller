@@ -1,0 +1,16 @@
+{
+  "name": "scroller",
+  "version": "2.0.0",
+  "description": "Accelerated panning and zooming for HTML and Canvas",
+  "main": "index.js",
+  "repository": "https://github.com/smart-parks/scroller.git",
+  "author": "Zynga",
+  "license": "MIT",
+  "scripts": {
+    "build": "rollup -c rollup.config.js"
+  },
+  "devDependencies": {
+    "@ampproject/rollup-plugin-closure-compiler": "^0.25.2",
+    "rollup": "^2.10.9"
+  }
+}
