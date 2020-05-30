@@ -4,16 +4,16 @@ import { terser } from "rollup-plugin-terser";
 export default {
   input: "src/Scroller.js",
   output: [
-    { file: "index.js", format: "cjs" },
-    { file: "index.umd.js", format: "umd", name: "Scroller" }
+    { file: "index.js", format: "umd", name: "Scroller", sourcemap: true },
+    { file: "index.es.js", format: "es", sourcemap: true },
   ],
   plugins: [
     terser({
       mangle: {
         properties: {
-          regex: /__.+/
-        }
-      }
+          regex: /__.+/,
+        },
+      },
     }),
   ],
 };
