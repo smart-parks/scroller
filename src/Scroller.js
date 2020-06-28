@@ -597,6 +597,25 @@ const defaults = {
     },
 
     /**
+     * Scrolls to the given position, centering the position on the
+     *
+     * @public
+     *
+     * @param left {Number?null} Horizontal scroll position, keeps current if value is <code>null</code>
+     * @param top {Number?null} Vertical scroll position, keeps current if value is <code>null</code>
+     * @param animate {Boolean?false} Whether the scrolling should happen using an animation
+     * @param zoom {Number?null} Zoom level to go to
+     */
+    scrollToViewportCenter(left, top, animate, zoom) {
+      this.scrollTo(
+        left - this.__clientWidth * 0.5,
+        top - this.__clientHeight * 0.5,
+        animate,
+        zoom
+      );
+    },
+
+    /**
      * Scroll by the given offset
      *
      * @public
@@ -616,6 +635,36 @@ const defaults = {
         : self.__scrollTop;
 
       self.scrollTo(startLeft + (left || 0), startTop + (top || 0), animate);
+    },
+
+    /**
+     * Determine if a point is found within the bounds of a container
+     *
+     * @public
+     *
+     * @param x {Number} X coordinate of point
+     * @param y {Number} Y coordinate of point
+     *
+     * @returns {Boolean} True if found within container bounds
+     */
+    containsPoint(x, y) {
+      if (x < 0) {
+        return false;
+      }
+
+      if (x > self.__contentWidth) {
+        return false;
+      }
+
+      if (y < 0) {
+        return false;
+      }
+
+      if (y > self.__contentHeight) {
+        return false;
+      }
+
+      return true;
     },
 
     /*

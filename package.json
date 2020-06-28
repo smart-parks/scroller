@@ -9,6 +9,7 @@
   "license": "MIT",
   "scripts": {
     "build": "rollup -c rollup.config.js; du index.js; gzip -c index.js | wc -c",
+    "watch": "rollup -c rollup.config.js --watch",
     "format": "prettier --write src/*.js"
   },
   "devDependencies": {
