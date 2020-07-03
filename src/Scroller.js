@@ -515,7 +515,6 @@ Scroller.prototype = {
    */
   scrollTo: function (left, top, animate, zoom) {
     var self = this;
-
     // Stop deceleration
     if (self.__isDecelerating) {
       stop(self.__isDecelerating);
@@ -528,9 +527,9 @@ Scroller.prototype = {
         throw new Error("Zooming is not enabled!");
       }
 
+
       left *= zoom;
       top *= zoom;
-
       // Recompute maximum values while temporary tweaking maximum scroll ranges
       self.__computeScrollMax(zoom);
     } else {
@@ -586,8 +585,8 @@ Scroller.prototype = {
    */
   scrollToViewportCenter(left, top, animate, zoom) {
     this.scrollTo(
-      left - this.__clientWidth * 0.5,
-      top - this.__clientHeight * 0.5,
+      left - this.__clientWidth * 0.5 / zoom,
+      top - this.__clientHeight * 0.5 / zoom,
       animate,
       zoom
     );
