@@ -27,8 +27,8 @@ const global = typeof window == "undefined" ? {} : window;
 
 const desiredFrames = 60;
 const millisecondsPerSecond = 1000;
-const running = {};
 
+let running = {};
 let counter = 1;
 
 /**
