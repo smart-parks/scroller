@@ -527,7 +527,6 @@ Scroller.prototype = {
         throw new Error("Zooming is not enabled!");
       }
 
-
       left *= zoom;
       top *= zoom;
       // Recompute maximum values while temporary tweaking maximum scroll ranges
@@ -584,11 +583,11 @@ Scroller.prototype = {
    * @param zoom {Number?null} Zoom level to go to
    */
   scrollToViewportCenter(left, top, animate, zoom) {
-    zoom = zoom == null ? this.__zoomLevel : zoom
+    zoom = zoom == null ? this.__zoomLevel : zoom;
 
     // TODO - it would be really awesome if we could animate this,
     // however it appears to get in the way of panning.
-    this.zoomTo(zoom, false)
+    this.zoomTo(zoom, false);
 
     this.scrollTo(
       left * zoom - this.__clientWidth * 0.5,
